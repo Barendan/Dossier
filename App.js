@@ -6,12 +6,11 @@ import * as eva from '@eva-design/eva';
 import {ApplicationProvider, IconRegistry} from '@ui-kitten/components';
 import {EvaIconsPack} from '@ui-kitten/eva-icons';
 
-import {AuthStackScreen, AppDrawerScreen} from '_navigations';
+import {AuthStack, AppDrawer} from '_navigations';
 import {NavigationService} from './helpers';
 
 import storage from '../src/storage';
 import {login} from '_store/user';
-// import { updatePlan, setMemberPlans } from '_store/persons';
 
 import store from './store';
 
@@ -28,10 +27,6 @@ const App = () => {
         });
 
         if (storedUser?.id) {
-          if (storedUser.MemberPlans && storedUser.MemberPlans.length > 0) {
-            dispatch(setMemberPlans(storedUser.MemberPlans));
-            dispatch(updatePlan(storedUser.MemberPlans[0])); //default to first plan
-          }
           dispatch(login(storedUser));
         }
       } catch (error) {
@@ -55,25 +50,16 @@ const App = () => {
   return (
     <Provider store={store}>
       <IconRegistry icons={EvaIconsPack} />
-      <ApplicationProvider {...eva} theme={eva.light}>
-        <PreferencesContext.Provider value={preferences}>
-          <MenuProvider>
-            <NavigationContainer
-              ref={NavigationService.navigationRef}
-              onReady={() => {
-                NavigationService.isReadyRef.current = true;
-              }}
-              theme={theme}>
-              {isLoading ? (
-                <></>
-              ) : user ? (
-                <AppDrawerScreen />
-              ) : (
-                <AuthStackScreen />
-              )}
-            </NavigationContainer>
-          </MenuProvider>
-        </PreferencesContext.Provider>
+      <ApplicationProvider {...eva}>
+        <MenuProvider>
+          <NavigationContainer
+            ref={NavigationService.navigationRef}
+            onReady={() => {
+              NavigationService.isReadyRef.current = true;
+            }}>
+            {user ? <AppDrawer /> : <AuthStack />}
+          </NavigationContainer>
+        </MenuProvider>
       </ApplicationProvider>
     </Provider>
   );
