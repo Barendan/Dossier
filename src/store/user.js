@@ -93,6 +93,7 @@ const slice = createSlice({
   },
 });
 export default slice.reducer;
+
 // Actions
 const {loginSuccess, logoutSuccess, updateSuccess, saveUserLogin} =
   slice.actions;
